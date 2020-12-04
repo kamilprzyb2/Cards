@@ -5,15 +5,16 @@ using Mono.Data.Sqlite;
 using System.Data;
 public class SqliteHelper
 {
-    public IDbConnection dbConnection;
+    public SqliteConnection dbConnection;
     public string dbPath;
     
     /// <summary>
-    /// Remember to call CreateTables when application starts!
+    /// Remember to call CreateTables in the editor
     /// </summary>
     public SqliteHelper()
     {
         // for editor work use path to assets, for release use appdata
+        // TODO: have deck name as a setting for switching decks
         #if UNITY_EDITOR
                 dbPath = "URI=file:" + Application.dataPath + "/Scripts/Database/deck.db";
         #else
@@ -21,39 +22,27 @@ public class SqliteHelper
         #endif
         dbConnection = new SqliteConnection(dbPath);
         dbConnection.Open();
+
+        // foreign keys are off by default
+        SqliteCommand cmd = GetCommand();
+        cmd.CommandText = "PRAGMA foreign_keys = ON;";
+        cmd.ExecuteNonQuery();
     }
     ~SqliteHelper()
     {
         dbConnection.Close();
     }
     
-    public IDbCommand GetCommand()
+    public SqliteCommand GetCommand()
     {
         return dbConnection.CreateCommand();
-    }
-    public virtual IDataReader GetAll()
-    {
-        Debug.LogError("Unimplemented function");
-        throw null;
-    }
-
-    public virtual IDataReader GetById(int id)
-    {
-        Debug.LogError("Unimplemented function");
-        throw null;
-    }
-
-    public virtual void DeleteById()
-    {
-        Debug.LogError("Unimplemented function");
-        throw null;
     }
 
     public void CreateTables()
     {
-        IDbCommand cmd = GetCommand();
+        SqliteCommand cmd = GetCommand();
 
-        cmd.CommandText = @"CREATE TABLE IF NOT EXISTS 'group' (
+        cmd.CommandText = @"CREATE TABLE IF NOT EXISTS 'card_group' (
                             'id'    INTEGER,
 	                        'name'  TEXT NOT NULL,
 	                        'note'  TEXT,
@@ -69,7 +58,8 @@ public class SqliteHelper
 
         cmd.CommandText = @"CREATE TABLE IF NOT EXISTS 'card' (
 							'id'    INTEGER,
-							'group_id'  INTEGER,
+							'group_id'  INTEGER NOT NULL,
+                            'icon_id' INTEGER NOT NULL,
 							'name'  TEXT NOT NULL,
 							'description'   TEXT NOT NULL,
 							'frequency' INTEGER NOT NULL,
@@ -83,14 +73,14 @@ public class SqliteHelper
 							'decision2_value2'  INTEGER NOT NULL,
 							'decision2_value3'  INTEGER NOT NULL,
 							'decision2_value4'  INTEGER NOT NULL,
-							'decision1_group_id'    INTEGER,
-							'decision2_group_id'    INTEGER,
+							'decision1_group_id'    INTEGER NOT NULL,
+							'decision2_group_id'    INTEGER NOT NULL,
 							'type'  INTEGER NOT NULL,
 							'note'  TEXT,
 							PRIMARY KEY('id' AUTOINCREMENT),
-							FOREIGN KEY('group_id') REFERENCES 'group'('id'),
-							FOREIGN KEY('decision1_group_id') REFERENCES 'group'('id'),
-							FOREIGN KEY('decision2_group_id') REFERENCES 'group'('id')); ";
+							FOREIGN KEY('group_id') REFERENCES 'card_group'('id'),
+							FOREIGN KEY('decision1_group_id') REFERENCES 'card_group'('id'),
+							FOREIGN KEY('decision2_group_id') REFERENCES 'card_group'('id')); ";
         cmd.ExecuteNonQuery();
     }
 }
