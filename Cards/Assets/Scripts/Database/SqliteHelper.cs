@@ -52,6 +52,7 @@ public class SqliteHelper
         cmd.CommandText = @"CREATE TABLE IF NOT EXISTS 'icon' (
                             'id'    INTEGER,
 	                        'name'  TEXT NOT NULL,
+                            'path'  TEXT NOT NULL,
 	                        'note'  TEXT,
 	                        PRIMARY KEY('id' AUTOINCREMENT)); ";
         cmd.ExecuteNonQuery();

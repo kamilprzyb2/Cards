@@ -3,37 +3,39 @@ using System.Collections.Generic;
 using UnityEngine;
 using Mono.Data.Sqlite;
 using System.Data;
-public class GroupDb : SqliteHelper
+public class IconDb : SqliteHelper
 {
-    public GroupDb() : base()
-    {
+	public IconDb() : base()
+	{
 
-    }
+	}
 	public int Count()
 	{
 		SqliteCommand cmd = GetCommand();
-		cmd.CommandText = "SELECT COUNT (*) FROM card_group";
+		cmd.CommandText = "SELECT COUNT (*) FROM icon";
 		SqliteDataReader reader = cmd.ExecuteReader();
 		return reader.GetInt32(0);
 	}
 
-	public void Add(string name, string note)
+	public void Add(string name, string path, string note)
 	{
 		SqliteCommand cmd = GetCommand();
-		cmd.CommandText = "INSERT INTO card_group (name, note) VALUES (@name, @note);";
+		cmd.CommandText = "INSERT INTO icon (name, note, path) VALUES (@name, @note, @path);";
 		cmd.Parameters.AddWithValue("@name", name);
 		cmd.Parameters.AddWithValue("@note", note);
+		cmd.Parameters.AddWithValue("@path", path);
 
 		cmd.Prepare();
 		cmd.ExecuteNonQuery();
 	}
 
-	public void Update(int id, string name, string note)
-    {
+	public void Update(int id, string name, string path, string note)
+	{
 		SqliteCommand cmd = GetCommand();
-		cmd.CommandText = "UPDATE card_group SET name = @name,  note = @note WHERE id = @id;";
+		cmd.CommandText = "UPDATE icon SET name = @name, path = @path, note = @note WHERE id = @id;";
 		cmd.Parameters.AddWithValue("@name", name);
 		cmd.Parameters.AddWithValue("@note", note);
+		cmd.Parameters.AddWithValue("@path", path);
 		cmd.Parameters.AddWithValue("@id", id);
 
 		cmd.Prepare();
@@ -41,29 +43,30 @@ public class GroupDb : SqliteHelper
 	}
 
 	public void DeleteById(int id)
-    {
+	{
 		SqliteCommand cmd = GetCommand();
-		cmd.CommandText = "DELETE FROM card_group WHERE id = @id;";
+		cmd.CommandText = "DELETE FROM icon WHERE id = @id;";
 		cmd.Parameters.AddWithValue("@id", id);
 
 		cmd.Prepare();
 		cmd.ExecuteNonQuery();
 	}
 
-	public List<Group> GetAll()
+	public List<Icon> GetAll()
 	{
-		List<Group> result = new List<Group>();
+		List<Icon> result = new List<Icon>();
 		SqliteCommand cmd = GetCommand();
 		cmd.CommandText =
-			@"SELECT id, name, note
-			FROM card_group";
+			@"SELECT id, name, path, note
+			FROM icon";
 		SqliteDataReader reader = cmd.ExecuteReader();
 		while (reader.Read())
 		{
 			int id = reader.GetInt32(0);
 			string name = reader.GetString(1);
-			string note = reader.GetString(2);
-			result.Add(new Group(id, name, note));
+			string path = reader.GetString(2);
+			string note = reader.GetString(3);
+			result.Add(new Icon(id, name, path, note));
 		}
 		return result;
 	}
