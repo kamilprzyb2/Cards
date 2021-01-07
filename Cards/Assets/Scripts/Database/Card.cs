@@ -6,9 +6,7 @@ public class Card
 {
     public int Id { get; }
     public int GroupId { get; }
-    public int IconId { get; }
     public string Name { get; }
-    public string Description { get; }
     public int Frequency { get; }
     public Decision[] Decisions { get; }
     public int Type { get; }
@@ -18,9 +16,7 @@ public class Card
     {
         Id = model.Id;
         GroupId = model.GroupId;
-        IconId = model.IconId;
         Name = model.Name;
-        Description = model.Description;
         Frequency = model.Frequency;
         Decisions = model.Decisions;
         Type = model.Type;

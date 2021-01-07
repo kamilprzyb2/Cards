@@ -9,6 +9,7 @@ public class GroupEditor : MonoBehaviour
     public Dropdown groupList;
     public InputField groupName;
     public InputField note;
+    public Button deleteBtn;
 
     private int selected;
 
@@ -27,13 +28,14 @@ public class GroupEditor : MonoBehaviour
             groupList.options.Add(new Dropdown.OptionData(text));
         }
         groupList.value = 0;
+        groupList.RefreshShownValue();
         Clear();
     }
     
     public void ChangeSelection()
     {
         selected = groupList.value;
-
+        
         // new group
         if (selected == 0)
         {
@@ -45,14 +47,17 @@ public class GroupEditor : MonoBehaviour
             Group selectedGroup = editor.groups[selected - 1];
             groupName.text = selectedGroup.Name;
             note.text = selectedGroup.Note;
+
+            // enable delete button if its not start group
+            deleteBtn.enabled = (selected > 1);
         }
     }
 
     private void Clear()
     {
-        // clear all fields
         groupName.text = null;
         note.text = null;
+        deleteBtn.enabled = false;
     }
 
     public void Save()
@@ -61,7 +66,7 @@ public class GroupEditor : MonoBehaviour
     }
     public void Delete()
     {
-        if (selected == 0)
+        if (selected < 2)
             return;
         editor.DeleteGroup(selected);
     }

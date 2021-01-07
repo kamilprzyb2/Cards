@@ -6,24 +6,30 @@ public class MainEditor : MonoBehaviour
 {
     public GroupEditor groupEditor;
     public IconEditor iconEditor;
+    public CardEditor cardEditor;
 
     private GroupDb groupDb;
     private IconDb iconDb;
+    private CardDb cardDb;
     public List<Group> groups;
     public List<Icon> icons;
+    public List<Card> cards;
 
     void Start()
     {
         SqliteHelper helper = new SqliteHelper();
-        helper.CreateTables();
 
         groupDb = new GroupDb();
-        reloadGroups();
+        ReloadGroups();
         groupEditor.UpdateDropdown();
 
         iconDb = new IconDb();
-        reloadIcons();
+        ReloadIcons();
         iconEditor.UpdateDropdown();
+
+        cardDb = new CardDb();
+        ReloadCards();
+        cardEditor.UpdateDropdowns();
     }
 
     public void SaveGroup(int selected, string name, string note)
@@ -33,19 +39,21 @@ public class MainEditor : MonoBehaviour
         else
             groupDb.Update(groups[selected-1].Id, name, note);
 
-        reloadGroups();
+        ReloadGroups();
         groupEditor.UpdateDropdown();
+        cardEditor.UpdateDropdowns();
     }
 
     public void DeleteGroup(int selected)
     {
         groupDb.DeleteById(groups[selected-1].Id);
 
-        reloadGroups();
+        ReloadGroups();
         groupEditor.UpdateDropdown();
+        cardEditor.UpdateDropdowns();
     }
 
-    private void reloadGroups()
+    private void ReloadGroups()
     {
         groups = groupDb.GetAll();
     }
@@ -57,19 +65,44 @@ public class MainEditor : MonoBehaviour
         else
             iconDb.Update(icons[selected - 1].Id, name, path, note);
 
-        reloadIcons();
+        ReloadIcons();
         iconEditor.UpdateDropdown();
+        cardEditor.UpdateDropdowns();
     }
 
     public void DeleteIcon(int selected)
     {
         iconDb.DeleteById(icons[selected - 1].Id);
 
-        reloadIcons();
+        ReloadIcons();
         iconEditor.UpdateDropdown();
+        cardEditor.UpdateDropdowns();
     }
-    private void reloadIcons()
+
+    private void ReloadIcons()
     {
         icons = iconDb.GetAll();
     }
+
+    public void SaveCard(int selected, CardModel model)
+    {
+        if (selected == 0)
+            cardDb.Add(model);
+        else
+            cardDb.Update(model);
+
+        ReloadCards();
+        cardEditor.UpdateDropdowns();
+    }
+
+    public void DeleteCard(int selected)
+    {
+        cardDb.DeleteById(selected);
+        cardEditor.UpdateDropdowns();
+    }
+
+    private void ReloadCards()
+    {
+        cards = cardDb.GetAll();
+    }    
 }

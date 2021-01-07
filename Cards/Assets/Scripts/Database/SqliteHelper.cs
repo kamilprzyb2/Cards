@@ -27,6 +27,12 @@ public class SqliteHelper
         SqliteCommand cmd = GetCommand();
         cmd.CommandText = "PRAGMA foreign_keys = ON;";
         cmd.ExecuteNonQuery();
+
+        if (IsDbEmpty())
+        {
+            CreateTables();
+            AddStartingGroup();
+        }
     }
     ~SqliteHelper()
     {
@@ -38,7 +44,7 @@ public class SqliteHelper
         return dbConnection.CreateCommand();
     }
 
-    public void CreateTables()
+    private void CreateTables()
     {
         SqliteCommand cmd = GetCommand();
 
@@ -60,21 +66,23 @@ public class SqliteHelper
         cmd.CommandText = @"CREATE TABLE IF NOT EXISTS 'card' (
 							'id'    INTEGER,
 							'group_id'  INTEGER NOT NULL,
-                            'icon_id' INTEGER NOT NULL,
 							'name'  TEXT NOT NULL,
-							'description'   TEXT NOT NULL,
 							'frequency' INTEGER NOT NULL,
 							'decision1_name'    TEXT NOT NULL,
-							'decision2_name'    TEXT NOT NULL,
+                            'decision1_description' TEXT NOT NULL,
+                            'decision1_icon_id' INTEGER NOT NULL,
 							'decision1_value1'  INTEGER NOT NULL,
 							'decision1_value2'  INTEGER NOT NULL,
 							'decision1_value3'  INTEGER NOT NULL,
 							'decision1_value4'  INTEGER NOT NULL,
+							'decision1_group_id'    INTEGER NOT NULL,
+							'decision2_name'    TEXT NOT NULL,
 							'decision2_value1'  INTEGER NOT NULL,
 							'decision2_value2'  INTEGER NOT NULL,
 							'decision2_value3'  INTEGER NOT NULL,
 							'decision2_value4'  INTEGER NOT NULL,
-							'decision1_group_id'    INTEGER NOT NULL,
+                            'decision2_description' TEXT NOT NULL,
+                            'decision2_icon_id' INTEGER NOT NULL,
 							'decision2_group_id'    INTEGER NOT NULL,
 							'type'  INTEGER NOT NULL,
 							'note'  TEXT,
@@ -82,6 +90,22 @@ public class SqliteHelper
 							FOREIGN KEY('group_id') REFERENCES 'card_group'('id'),
 							FOREIGN KEY('decision1_group_id') REFERENCES 'card_group'('id'),
 							FOREIGN KEY('decision2_group_id') REFERENCES 'card_group'('id')); ";
+        cmd.ExecuteNonQuery();
+    }
+
+    private bool IsDbEmpty()
+    {
+        SqliteCommand cmd = GetCommand();
+        cmd.CommandText = "SELECT COUNT(*) FROM sqlite_master WHERE type = 'table' AND name NOT LIKE 'sqlite_ % ';";
+        SqliteDataReader reader = cmd.ExecuteReader();
+        reader.Read();
+        return (reader.GetInt32(0) == 0);
+    }
+
+    private void AddStartingGroup()
+    {
+        SqliteCommand cmd = GetCommand();
+        cmd.CommandText = "INSERT INTO card_group (name, note) VALUES ('Start Group', 'Put all starter cards here');";
         cmd.ExecuteNonQuery();
     }
 }

@@ -5,6 +5,8 @@ using UnityEngine;
 public class Decision
 {
     public string Name;
+    public string Description;
+    public int IconId;
     public int[] Values;
     public int GroupId;
     

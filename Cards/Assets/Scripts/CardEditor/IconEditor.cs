@@ -11,6 +11,7 @@ public class IconEditor : MonoBehaviour
     public InputField iconPath;
     public InputField note;
     public Image image;
+    public Button deleteBtn;
 
     private int selected;
 
@@ -29,6 +30,7 @@ public class IconEditor : MonoBehaviour
             iconList.options.Add(new Dropdown.OptionData(text));
         }
         iconList.value = 0;
+        iconList.RefreshShownValue();
         Clear();
     }
 
@@ -43,12 +45,13 @@ public class IconEditor : MonoBehaviour
         }
         else
         {
-        // existing icon selected
-        Icon selectedIcon = editor.icons[selected - 1];
-        iconName.text = selectedIcon.Name;
-        iconPath.text = selectedIcon.Path;
-        note.text = selectedIcon.Note;
-        UpdateImage();
+            // existing icon selected
+            Icon selectedIcon = editor.icons[selected - 1];
+            iconName.text = selectedIcon.Name;
+            iconPath.text = selectedIcon.Path;
+            note.text = selectedIcon.Note;
+            UpdateImage();
+            deleteBtn.enabled = true;
         }
     }
 
@@ -64,6 +67,7 @@ public class IconEditor : MonoBehaviour
         iconPath.text = null;
         note.text = null;
         image.sprite = null;
+        deleteBtn.enabled = false;
     }
 
     public void Save()

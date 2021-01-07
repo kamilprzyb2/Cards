@@ -6,9 +6,7 @@ public class CardModel
 {
     public int Id = 0;
     public int GroupId;
-    public int IconId;
     public string Name;
-    public string Description;
     public int Frequency;
     public Decision[] Decisions;
     public int Type;
