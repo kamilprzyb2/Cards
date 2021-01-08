@@ -97,7 +97,8 @@ public class MainEditor : MonoBehaviour
 
     public void DeleteCard(int selected)
     {
-        cardDb.DeleteById(selected);
+        cardDb.DeleteById(cards[selected-1].Id);
+        ReloadCards();
         cardEditor.UpdateDropdowns();
     }
 
