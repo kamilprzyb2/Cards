@@ -125,6 +125,12 @@ public class CardDb : SqliteHelper
 			FROM card";
 		return Get(cmd);
 	}
+
+	public List<Card> GetStarterCards()
+    {
+		return GetByGroup(1);
+	}
+
 	public List<Card> GetByGroup(int groupId)
 	{
 		SqliteCommand cmd = GetCommand();
