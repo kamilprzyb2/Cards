@@ -5,12 +5,17 @@ using UnityEngine.UI;
 
 public class UIManager : MonoBehaviour
 {
+
+    public Text AttributesInfo;
+    [Header("Card")]
     public Image Icon1;
     public Image Icon2;
     public Text Description1;
     public Text Description2;
     public Button Button1;
     public Button Button2;
+
+
 
     private Dictionary<int, Icon> icons;
 
@@ -33,6 +38,13 @@ public class UIManager : MonoBehaviour
         Description2.text = card.Decisions[1].Description;
         Button1.GetComponentInChildren<Text>().text = card.Decisions[0].Name;
         Button2.GetComponentInChildren<Text>().text = card.Decisions[1].Name;
+    }
+
+    public void UpdateAttributesInfo(int food, int population, int faith, int tools)
+    {
+        string info = "Food: " + food.ToString() + "\nPopulation: " + population.ToString() +
+            "\nFaith: " + faith + "\nTools: " + tools;
+        AttributesInfo.text = info;
     }
 
 }
