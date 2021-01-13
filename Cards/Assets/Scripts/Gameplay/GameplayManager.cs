@@ -24,6 +24,8 @@ public class GameplayManager : MonoBehaviour
 
     void Start()
     {
+        uiManager.UpdateAttributesInfo(food, population, faith, tools);
+
         cardDb = new CardDb();
         cardPool = cardDb.GetStarterCards();
 
@@ -42,6 +44,8 @@ public class GameplayManager : MonoBehaviour
         population += decision.Values[1];
         faith += decision.Values[2];
         tools += decision.Values[3];
+
+        uiManager.UpdateAttributesInfo(food, population, faith, tools);
 
         int groupId = decision.GroupId;
         cardPool.Remove(currentCard);
