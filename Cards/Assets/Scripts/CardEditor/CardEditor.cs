@@ -25,16 +25,7 @@ public class CardEditor : MonoBehaviour
 
     public void UpdateDropdowns()
     {
-        cardList.options.Clear();
-        cardList.options.Add(new Dropdown.OptionData("New Card"));
-        foreach (Card card in editor.cards)
-        {
-            string text = "#" + card.Id + " " + card.Name;
-            cardList.options.Add(new Dropdown.OptionData(text));
-        }
-        cardList.value = 0;
-        cardList.RefreshShownValue();
-        
+        UpdateCardList();
 
         groupList.options.Clear();
         foreach (Group group in editor.groups)
@@ -50,6 +41,19 @@ public class CardEditor : MonoBehaviour
         Clear();
     }
 
+    public void UpdateCardList()
+    {
+        cardList.options.Clear();
+        cardList.options.Add(new Dropdown.OptionData("New Card"));
+
+        foreach (Card card in editor.cards)
+        {
+            string text = "#" + card.Id + " " + card.Name;
+            cardList.options.Add(new Dropdown.OptionData(text));
+        }
+        cardList.value = 0;
+        cardList.RefreshShownValue();
+    }
     public void ChangeSelection()
     {
         selected = cardList.value;
@@ -74,7 +78,6 @@ public class CardEditor : MonoBehaviour
             deleteBtn.enabled = true;
         }
     }
-
     public int GetGroupIndex(int groupId)
     {
         int i = 0;
@@ -88,7 +91,6 @@ public class CardEditor : MonoBehaviour
         }
         return 0;
     }
-
     private void Clear()
     {
         note.text = null;
@@ -126,6 +128,25 @@ public class CardEditor : MonoBehaviour
         if (selected == 0)
             return;
         editor.DeleteCard(selected);
+    }
+
+    public void FilterByGroup()
+    {
+        int i = 1;
+        foreach (Card card in editor.cards)
+        {
+            if (card.GroupId != editor.groups[groupList.value].Id)
+            {
+                cardList.options[i].text = "";
+            }
+            i++;
+        }
+        cardList.RefreshShownValue();
+    }
+
+    public void UnFilter()
+    {
+        UpdateCardList();
     }
 
 }
