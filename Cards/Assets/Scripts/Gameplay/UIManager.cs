@@ -6,7 +6,10 @@ using UnityEngine.UI;
 public class UIManager : MonoBehaviour
 {
 
-    public Text AttributesInfo;
+    public Text FoodValue;
+    public Text PopulationValue;
+    public Text FaithValue;
+    public Text ToolsValue;
     [Header("Card")]
     public Image Icon1;
     public Image Icon2;
@@ -42,9 +45,10 @@ public class UIManager : MonoBehaviour
 
     public void UpdateAttributesInfo(int food, int population, int faith, int tools)
     {
-        string info = "Food: " + food.ToString() + "\nPopulation: " + population.ToString() +
-            "\nFaith: " + faith + "\nTools: " + tools;
-        AttributesInfo.text = info;
+        FoodValue.text = food.ToString();
+        PopulationValue.text = population.ToString();
+        FaithValue.text = faith.ToString();
+        ToolsValue.text = tools.ToString();
     }
 
 }
