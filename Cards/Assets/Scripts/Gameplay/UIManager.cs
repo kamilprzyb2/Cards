@@ -1,4 +1,6 @@
-﻿using System.Collections;
+﻿using Mono.Data.Sqlite;
+using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -24,6 +26,7 @@ public class UIManager : MonoBehaviour
 
     public void Start()
     {
+
         IconDb iconDb = new IconDb();
         icons = new Dictionary<int, Icon>();
         List<Icon> temp = iconDb.GetAll();
