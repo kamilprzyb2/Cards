@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameplayManager : MonoBehaviour
 {
@@ -17,10 +18,15 @@ public class GameplayManager : MonoBehaviour
     [SerializeField]
     private int tools = 10;
 
+    [Header("Win Condition")]
+    [SerializeField]
+    private int cardsToGo = 50;
 
     private CardDb cardDb;
     private List<Card> cardPool;
     private Card currentCard;
+
+    private bool locked = false;
 
     void Start()
     {
@@ -38,6 +44,17 @@ public class GameplayManager : MonoBehaviour
     /// <param name="decision">0 = left, else right</param>
     public void MakeDecision(int choice)
     {
+        if (locked)
+            return;
+
+        locked = true;
+
+        if (currentCard.Type == 404)
+        {
+            // if it's 404 card, restart
+            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        }
+
         Decision decision = choice == 0 ? currentCard.Decisions[0]: currentCard.Decisions[1];
 
         food += decision.Values[0];
@@ -47,17 +64,28 @@ public class GameplayManager : MonoBehaviour
 
         uiManager.UpdateAttributesInfo(food, population, faith, tools);
 
+        cardsToGo--;
+        CheckEndCondition();
+
         int groupId = decision.GroupId;
         cardPool.Remove(currentCard);
         AddCard(groupId);
         NextCard();
 
+        locked = false;
     }
   
     private void NextCard()
     {
-        int i = Random.Range(0, cardPool.Count);
-        currentCard = cardPool[i];
+        if (cardPool.Count == 0)
+        {
+            currentCard = Card.card404();
+        }
+        else
+        {
+            int i = Random.Range(0, cardPool.Count);
+            currentCard = cardPool[i];
+        }
         uiManager.UpdateCard(currentCard);
     }
 
@@ -81,5 +109,32 @@ public class GameplayManager : MonoBehaviour
         }
     }
 
+    private void CheckEndCondition()
+    {
+        if (food == 0)
+        {
+            Debug.Log("Lost by food");
+            return;
+        }
+        if (population == 0)
+        {
+            Debug.Log("Lost by population");
+            return;
+        }
+        if (faith == 0)
+        {
+            Debug.Log("Lost by faith");
+        }
+        if (tools == 0)
+        {
+            Debug.Log("Lost by tools");
+        }
+
+        if (cardsToGo <= 0)
+        {
+            Debug.Log("Victory!");
+        }
+
+    }
 
 }
