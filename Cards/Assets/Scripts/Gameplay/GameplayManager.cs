@@ -29,7 +29,8 @@ public class GameplayManager : MonoBehaviour
     private Card currentCard;
 
     private bool locked = false;
-
+    public bool hoverRightBtn = false;
+    public bool hoverLeftBtn = false;
 
     void Start()
     {
@@ -72,12 +73,13 @@ public class GameplayManager : MonoBehaviour
         if (CheckEndCondition())
             return;
 
+        uiManager.ShowFakeCards(currentCard.Decisions[0].Description, currentCard.Decisions[0].IconId,
+            currentCard.Decisions[1].Description, currentCard.Decisions[1].IconId);
+
         int groupId = decision.GroupId;
         cardPool.Remove(currentCard);
         AddCard(groupId);
         NextCard();
-
-        locked = false;
     }
 
     public void ButtonHover(int btn)
@@ -89,12 +91,37 @@ public class GameplayManager : MonoBehaviour
         // 0 = left button, else right
         decision = btn == 0 ? currentCard.Decisions[0] : currentCard.Decisions[1];
 
+        if (btn == 0)
+            hoverLeftBtn = true;
+        else
+            hoverRightBtn = true;
+
         uiManager.HighlightAttributes(decision.Values[0] != 0, decision.Values[1] != 0, decision.Values[2] != 0, decision.Values[3] != 0);
     }
 
     public void ButtonHoverExit()
     {
+        hoverLeftBtn = false;
+        hoverRightBtn = false;
+
         uiManager.UnHighlightAttributes();
+    }
+
+    public void UnlockGame()
+    {
+        locked = false;
+
+        if (hoverRightBtn)
+        {
+            Decision decision = currentCard.Decisions[1];
+            uiManager.HighlightAttributes(decision.Values[0] != 0, decision.Values[1] != 0, decision.Values[2] != 0, decision.Values[3] != 0);
+        }
+        else if (hoverLeftBtn)
+        {
+            Decision decision = currentCard.Decisions[0];
+            uiManager.HighlightAttributes(decision.Values[0] != 0, decision.Values[1] != 0, decision.Values[2] != 0, decision.Values[3] != 0);
+        }
+
     }
 
     private void NextCard()
@@ -166,6 +193,4 @@ public class GameplayManager : MonoBehaviour
         }
         return false;
     }
-
-    
 }
