@@ -65,4 +65,9 @@ public class UIManager : MonoBehaviour
         Tools.GetComponent<Animator>().SetBool("highlight", tools);
     }
 
+    public void UnHighlightAttributes()
+    {
+        HighlightAttributes(false, false, false, false);
+    }
+
 }

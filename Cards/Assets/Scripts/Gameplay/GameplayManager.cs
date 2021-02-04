@@ -51,6 +51,7 @@ public class GameplayManager : MonoBehaviour
             return;
 
         locked = true;
+        uiManager.UnHighlightAttributes();
 
         if (currentCard.Type == 404)
         {
@@ -81,6 +82,9 @@ public class GameplayManager : MonoBehaviour
 
     public void ButtonHover(int btn)
     {
+        if (locked)
+            return;
+
         Decision decision;
         // 0 = left button, else right
         decision = btn == 0 ? currentCard.Decisions[0] : currentCard.Decisions[1];
@@ -90,7 +94,7 @@ public class GameplayManager : MonoBehaviour
 
     public void ButtonHoverExit()
     {
-        uiManager.HighlightAttributes(false, false, false, false);
+        uiManager.UnHighlightAttributes();
     }
 
     private void NextCard()
