@@ -2,10 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class GameplayManager : MonoBehaviour
 {
     public UIManager uiManager;
+    public EndScreen EndWindow;
 
     [Header("Attributes")]
     [Tooltip("Change to modify start values")]
@@ -27,6 +29,7 @@ public class GameplayManager : MonoBehaviour
     private Card currentCard;
 
     private bool locked = false;
+
 
     void Start()
     {
@@ -65,7 +68,8 @@ public class GameplayManager : MonoBehaviour
         uiManager.UpdateAttributesInfo(food, population, faith, tools);
 
         cardsToGo--;
-        CheckEndCondition();
+        if (CheckEndCondition())
+            return;
 
         int groupId = decision.GroupId;
         cardPool.Remove(currentCard);
@@ -109,32 +113,40 @@ public class GameplayManager : MonoBehaviour
         }
     }
 
-    private void CheckEndCondition()
+    private bool CheckEndCondition()
     {
-        if (food == 0)
+        if (food <= 0)
         {
             Debug.Log("Lost by food");
-            return;
+            EndWindow.EndingStart();
+            return true;
         }
-        if (population == 0)
+        if (population <= 0)
         {
             Debug.Log("Lost by population");
-            return;
+            EndWindow.EndingStart();
+            return true;
         }
-        if (faith == 0)
+        if (faith <= 0)
         {
             Debug.Log("Lost by faith");
+            EndWindow.EndingStart();
+            return true;
         }
-        if (tools == 0)
+        if (tools <= 0)
         {
             Debug.Log("Lost by tools");
+            EndWindow.EndingStart();
+            return true;
         }
 
         if (cardsToGo <= 0)
         {
             Debug.Log("Victory!");
+            EndWindow.EndingStart();
+            return true;
         }
-
+        return false;
     }
 
 }
