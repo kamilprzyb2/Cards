@@ -78,7 +78,21 @@ public class GameplayManager : MonoBehaviour
 
         locked = false;
     }
-  
+
+    public void ButtonHover(int btn)
+    {
+        Decision decision;
+        // 0 = left button, else right
+        decision = btn == 0 ? currentCard.Decisions[0] : currentCard.Decisions[1];
+
+        uiManager.HighlightAttributes(decision.Values[0] != 0, decision.Values[1] != 0, decision.Values[2] != 0, decision.Values[3] != 0);
+    }
+
+    public void ButtonHoverExit()
+    {
+        uiManager.HighlightAttributes(false, false, false, false);
+    }
+
     private void NextCard()
     {
         if (cardPool.Count == 0)
@@ -149,4 +163,5 @@ public class GameplayManager : MonoBehaviour
         return false;
     }
 
+    
 }

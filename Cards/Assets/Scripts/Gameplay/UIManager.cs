@@ -20,7 +20,10 @@ public class UIManager : MonoBehaviour
     public Button Button1;
     public Button Button2;
 
-
+    public Image Food;
+    public Image Population;
+    public Image Faith;
+    public Image Tools;
 
     private Dictionary<int, Icon> icons;
 
@@ -52,6 +55,14 @@ public class UIManager : MonoBehaviour
         PopulationValue.text = population.ToString();
         FaithValue.text = faith.ToString();
         ToolsValue.text = tools.ToString();
+    }
+
+    public void HighlightAttributes(bool food, bool population, bool faith, bool tools)
+    {
+        Food.GetComponent<Animator>().SetBool("highlight", food);
+        Population.GetComponent<Animator>().SetBool("highlight", population);
+        Faith.GetComponent<Animator>().SetBool("highlight", faith);
+        Tools.GetComponent<Animator>().SetBool("highlight", tools);
     }
 
 }
