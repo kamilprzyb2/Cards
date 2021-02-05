@@ -2,10 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class GameplayManager : MonoBehaviour
 {
     public UIManager uiManager;
+    public EndScreen EndWindow;
 
     [Header("Attributes")]
     [Tooltip("Change to modify start values")]
@@ -27,6 +29,8 @@ public class GameplayManager : MonoBehaviour
     private Card currentCard;
 
     private bool locked = false;
+    public bool hoverRightBtn = false;
+    public bool hoverLeftBtn = false;
 
     void Start()
     {
@@ -48,6 +52,7 @@ public class GameplayManager : MonoBehaviour
             return;
 
         locked = true;
+        uiManager.UnHighlightAttributes();
 
         if (currentCard.Type == 404)
         {
@@ -63,18 +68,63 @@ public class GameplayManager : MonoBehaviour
         tools += decision.Values[3];
 
         uiManager.UpdateAttributesInfo(food, population, faith, tools);
+        uiManager.HighlightCounters(decision.Values[0], decision.Values[1], decision.Values[2], decision.Values[3]);
 
         cardsToGo--;
-        CheckEndCondition();
+        if (CheckEndCondition())
+            return;
+
+        uiManager.ShowFakeCards(currentCard.Decisions[0].Description, currentCard.Decisions[0].IconId,
+            currentCard.Decisions[1].Description, currentCard.Decisions[1].IconId);
 
         int groupId = decision.GroupId;
         cardPool.Remove(currentCard);
         AddCard(groupId);
         NextCard();
-
-        locked = false;
     }
-  
+
+    public void ButtonHover(int btn)
+    {
+        if (locked)
+            return;
+
+        Decision decision;
+        // 0 = left button, else right
+        decision = btn == 0 ? currentCard.Decisions[0] : currentCard.Decisions[1];
+
+        if (btn == 0)
+            hoverLeftBtn = true;
+        else
+            hoverRightBtn = true;
+
+        uiManager.HighlightAttributes(decision.Values[0] != 0, decision.Values[1] != 0, decision.Values[2] != 0, decision.Values[3] != 0);
+    }
+
+    public void ButtonHoverExit()
+    {
+        hoverLeftBtn = false;
+        hoverRightBtn = false;
+
+        uiManager.UnHighlightAttributes();
+    }
+
+    public void UnlockGame()
+    {
+        locked = false;
+
+        if (hoverRightBtn)
+        {
+            Decision decision = currentCard.Decisions[1];
+            uiManager.HighlightAttributes(decision.Values[0] != 0, decision.Values[1] != 0, decision.Values[2] != 0, decision.Values[3] != 0);
+        }
+        else if (hoverLeftBtn)
+        {
+            Decision decision = currentCard.Decisions[0];
+            uiManager.HighlightAttributes(decision.Values[0] != 0, decision.Values[1] != 0, decision.Values[2] != 0, decision.Values[3] != 0);
+        }
+
+    }
+
     private void NextCard()
     {
         if (cardPool.Count == 0)
@@ -109,32 +159,39 @@ public class GameplayManager : MonoBehaviour
         }
     }
 
-    private void CheckEndCondition()
+    private bool CheckEndCondition()
     {
-        if (food == 0)
+        if (food <= 0)
         {
             Debug.Log("Lost by food");
-            return;
+            EndWindow.EndingStart();
+            return true;
         }
-        if (population == 0)
+        if (population <= 0)
         {
             Debug.Log("Lost by population");
-            return;
+            EndWindow.EndingStart();
+            return true;
         }
-        if (faith == 0)
+        if (faith <= 0)
         {
             Debug.Log("Lost by faith");
+            EndWindow.EndingStart();
+            return true;
         }
-        if (tools == 0)
+        if (tools <= 0)
         {
             Debug.Log("Lost by tools");
+            EndWindow.EndingStart();
+            return true;
         }
 
         if (cardsToGo <= 0)
         {
             Debug.Log("Victory!");
+            EndWindow.EndingStart();
+            return true;
         }
-
+        return false;
     }
-
 }

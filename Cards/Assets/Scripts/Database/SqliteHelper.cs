@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Mono.Data.Sqlite;
 using System.Data;
+
 public class SqliteHelper
 {
     public SqliteConnection dbConnection;
@@ -13,13 +14,9 @@ public class SqliteHelper
     /// </summary>
     public SqliteHelper()
     {
-        // for editor work use path to assets, for release use appdata
-        // TODO: have deck name as a setting for switching decks
-        #if UNITY_EDITOR
-                dbPath = "URI=file:" + Application.dataPath + "/Scripts/Database/deck.db";
-        #else
-                dbPath = "URI=file:" + Application.persistentDataPath + "/deck.db";
-        #endif
+
+        dbPath = "URI=file:" + Application.streamingAssetsPath + "/deck.db";
+
         dbConnection = new SqliteConnection(dbPath);
         dbConnection.Open();
 
