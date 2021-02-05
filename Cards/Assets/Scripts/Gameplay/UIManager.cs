@@ -88,5 +88,27 @@ public class UIManager : MonoBehaviour
         FakeCard2.GetComponent<Animator>().SetTrigger("curl");
     }
 
+    public void HighlightCounters(int food, int population, int faith, int tools)
+    {
+        if (food > 0)
+            FoodValue.GetComponent<Animator>().SetTrigger("green");
+        else if (food <0)
+            FoodValue.GetComponent<Animator>().SetTrigger("red");
+
+        if (population > 0)
+            PopulationValue.GetComponent<Animator>().SetTrigger("green");
+        else if (population < 0)
+            PopulationValue.GetComponent<Animator>().SetTrigger("red");
+
+        if (faith > 0)
+            FaithValue.GetComponent<Animator>().SetTrigger("green");
+        else if (faith < 0)
+            FaithValue.GetComponent<Animator>().SetTrigger("red");
+
+        if (tools > 0)
+            ToolsValue.GetComponent<Animator>().SetTrigger("green");
+        else if (tools < 0)
+            ToolsValue.GetComponent<Animator>().SetTrigger("red");
+    }
 
 }

@@ -47,8 +47,8 @@ public class Card
         model.Decisions[0].Values = new int[4];
         model.Decisions[1].Values = new int[4];
 
-        model.Decisions[0].IconId = 1;
-        model.Decisions[1].IconId = 1;
+        model.Decisions[0].IconId = 8;
+        model.Decisions[1].IconId = 8;
 
         for (int i = 0; i < 2; i++)
         {

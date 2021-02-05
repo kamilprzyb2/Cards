@@ -68,6 +68,7 @@ public class GameplayManager : MonoBehaviour
         tools += decision.Values[3];
 
         uiManager.UpdateAttributesInfo(food, population, faith, tools);
+        uiManager.HighlightCounters(decision.Values[0], decision.Values[1], decision.Values[2], decision.Values[3]);
 
         cardsToGo--;
         if (CheckEndCondition())
